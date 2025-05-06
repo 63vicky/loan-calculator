@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import {
   Box, Typography, TextField, Button, Paper,
-  Select, MenuItem, FormControl,
+  Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Select, MenuItem, FormControl,
   InputLabel, Grid
 } from '@mui/material';
 import { useEmiCalculator } from '../hooks/useEmiCalculator';
@@ -12,7 +13,8 @@ const HomePage = () => {
     loanAmount, setLoanAmount,
     interestRate, setInterestRate,
     loanTerm, setLoanTerm,
-    emi, calculateEmi
+    emi, amortizationSchedule,
+    calculateEmi
   } = useEmiCalculator();
 
   const {
@@ -22,6 +24,7 @@ const HomePage = () => {
 
   const [selectedCurrency, setSelectedCurrency] = useState(baseCurrency);
   const [convertedEmi, setConvertedEmi] = useState(0);
+  const [showAmortizationSchedule, setShowAmortizationSchedule] = useState(false);
 
   useEffect(() => {
     if (emi > 0) {
@@ -32,6 +35,7 @@ const HomePage = () => {
   const handleCalculate = () => {
     const calculatedEmi = calculateEmi();
     setConvertedEmi(convertCurrency(calculatedEmi, selectedCurrency));
+    setShowAmortizationSchedule(true);
   };
 
   const handleCurrencyChange = (event) => {
@@ -89,33 +93,74 @@ const HomePage = () => {
       </Paper>
 
       {emi > 0 && (
-        <Paper sx={{ p: 3, mb: 3 }}>
-          <Typography variant="h5" gutterBottom>
-            Monthly EMI: ${emi.toFixed(2)}
-          </Typography>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-            <FormControl sx={{ minWidth: 120, mr: 2 }}>
-              <InputLabel id="currency-select-label">Currency</InputLabel>
-              <Select
-                labelId="currency-select-label"
-                value={selectedCurrency}
-                label="Currency"
-                onChange={handleCurrencyChange}
-              >
-                {['INR', 'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD'].map((currency) => (
-                  <MenuItem key={currency} value={currency}>
-                    {currency}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <Typography variant="body1">
-              Converted EMI: {selectedCurrency} {convertedEmi}
+        <>
+          <Paper sx={{ p: 3, mb: 3 }}>
+            <Typography variant="h5" gutterBottom>
+              Monthly EMI: ${emi.toFixed(2)}
             </Typography>
-          </Box>
-        </Paper>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+              <FormControl sx={{ minWidth: 120, mr: 2 }}>
+                <InputLabel id="currency-select-label">Currency</InputLabel>
+                <Select
+                  labelId="currency-select-label"
+                  value={selectedCurrency}
+                  label="Currency"
+                  onChange={handleCurrencyChange}
+                >
+                  {['INR', 'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD'].map((currency) => (
+                    <MenuItem key={currency} value={currency}>
+                      {currency}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <Typography variant="body1">
+                Converted EMI: {selectedCurrency} {convertedEmi}
+              </Typography>
+            </Box>
+          </Paper>
+
+          {showAmortizationSchedule && amortizationSchedule.length > 0 && (
+            <Paper sx={{ p: 3, mb: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Amortization Schedule ({selectedCurrency})
+              </Typography>
+
+              <TableContainer component={Paper} sx={{ mb: 2 }}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Month</TableCell>
+                      <TableCell align="right">Principal</TableCell>
+                      <TableCell align="right">Interest</TableCell>
+                      <TableCell align="right">Remaining Balance</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {amortizationSchedule.map((row) => (
+                      <TableRow key={row.month}>
+                        <TableCell component="th" scope="row">
+                          {row.month}
+                        </TableCell>
+                        <TableCell align="right">
+                          {convertCurrency(row.principalPayment, selectedCurrency)} {selectedCurrency}
+                        </TableCell>
+                        <TableCell align="right">
+                          {convertCurrency(row.interestPayment, selectedCurrency)} {selectedCurrency}
+                        </TableCell>
+                        <TableCell align="right">
+                          {convertCurrency(row.balance, selectedCurrency)} {selectedCurrency}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          )}
+        </>
       )}
     </Box>
   );

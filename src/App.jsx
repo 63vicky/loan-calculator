@@ -47,9 +47,6 @@ function App() {
                     control={<Switch checked={darkMode} onChange={handleThemeChange} />}
                     label=""
                   />
-                  <span className="theme-toggle-label">
-                    {darkMode ? "Dark Mode" : "Light Mode"}
-                  </span>
                 </div>
               </Toolbar>
             </AppBar>

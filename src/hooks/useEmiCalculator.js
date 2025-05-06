@@ -5,6 +5,7 @@ export const useEmiCalculator = () => {
   const [interestRate, setInterestRate] = useState(8.5);
   const [loanTerm, setLoanTerm] = useState(5);
   const [emi, setEmi] = useState(0);
+  const [amortizationSchedule, setAmortizationSchedule] = useState([]);
 
   const calculateEmi = () => {
     // Convert interest rate from annual to monthly percentage
@@ -20,7 +21,31 @@ export const useEmiCalculator = () => {
 
     setEmi(emiValue);
 
+    // Generate amortization schedule
+    generateAmortizationSchedule(emiValue, monthlyInterestRate, loanTermInMonths);
+
     return emiValue;
+  };
+
+  const generateAmortizationSchedule = (emiValue, monthlyInterestRate, loanTermInMonths) => {
+    let balance = loanAmount;
+    const schedule = [];
+
+    for (let month = 1; month <= loanTermInMonths; month++) {
+      const interestPayment = balance * monthlyInterestRate;
+      const principalPayment = emiValue - interestPayment;
+      balance -= principalPayment;
+
+      schedule.push({
+        month,
+        principalPayment: principalPayment.toFixed(2),
+        interestPayment: interestPayment.toFixed(2),
+        balance: Math.max(0, balance).toFixed(2)
+      });
+    }
+
+    setAmortizationSchedule(schedule);
+    return schedule;
   };
 
   return {
@@ -31,6 +56,7 @@ export const useEmiCalculator = () => {
     loanTerm,
     setLoanTerm,
     emi,
+    amortizationSchedule,
     calculateEmi
   };
 };
