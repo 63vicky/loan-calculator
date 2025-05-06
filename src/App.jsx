@@ -6,6 +6,8 @@ import {
   FormControlLabel, useMediaQuery
 } from '@mui/material';
 import { ThemeContext } from './context/ThemeContext';
+import { CurrencyProvider } from './context/CurrencyContext';
+import HomePage from './pages/HomePage';
 import './App.css';
 
 function App() {
@@ -31,38 +33,33 @@ function App() {
 
   return (
     <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Box sx={{ flexGrow: 1 }}>
-          <AppBar position="static">
-            <Toolbar>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                Loan Calculator
-              </Typography>
-              <div className="theme-toggle">
-                <FormControlLabel
-                  control={<Switch checked={darkMode} onChange={handleThemeChange} />}
-                  label=""
-                />
-                <span className="theme-toggle-label">
-                  {darkMode ? "Dark Mode" : "Light Mode"}
-                </span>
-              </div>
-            </Toolbar>
-          </AppBar>
-        </Box>
-
-        <Container>
-          <Box sx={{ my: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom>
-              Welcome to Loan Calculator App
-            </Typography>
-            <Typography variant="body1">
-              This is a simple loan calculator app with dark/light mode toggle.
-            </Typography>
+      <CurrencyProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Box sx={{ flexGrow: 1 }}>
+            <AppBar position="static">
+              <Toolbar>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                  Loan Calculator
+                </Typography>
+                <div className="theme-toggle">
+                  <FormControlLabel
+                    control={<Switch checked={darkMode} onChange={handleThemeChange} />}
+                    label=""
+                  />
+                  <span className="theme-toggle-label">
+                    {darkMode ? "Dark Mode" : "Light Mode"}
+                  </span>
+                </div>
+              </Toolbar>
+            </AppBar>
           </Box>
-        </Container>
-      </ThemeProvider>
+
+          <Container>
+            <HomePage />
+          </Container>
+        </ThemeProvider>
+      </CurrencyProvider>
     </ThemeContext.Provider>
   );
 }
