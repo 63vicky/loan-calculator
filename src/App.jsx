@@ -10,6 +10,7 @@ import { ThemeContext } from './context/ThemeContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import HomePage from './pages/HomePage';
 import ExchangeRatesPage from './pages/ExchangeRatesPage';
+import AboutPage from './pages/AboutPage';
 import ErrorPage from './pages/ErrorPage';
 import './App.css';
 
@@ -55,6 +56,9 @@ function App() {
                     <Link to="/exchange-rates" style={{ color: 'white', textDecoration: 'none', margin: '0 10px' }}>
                       EXCHANGE RATES (LIVE)
                     </Link>
+                    <Link to="/about" style={{ color: 'white', textDecoration: 'none', margin: '0 10px' }}>
+                      ABOUT
+                    </Link>
                     <Link to="/error-page" style={{ color: 'white', textDecoration: 'none', margin: '0 10px' }}>
                       ERROR PAGE
                     </Link>
@@ -71,6 +75,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/exchange-rates" element={<ExchangeRatesPage />} />
+                <Route path="/about" element={<AboutPage />} />
                 <Route path="/error-page" element={<ErrorPage />} />
                 <Route path="*" element={<Navigate to="/error-page" replace />} />
               </Routes>
