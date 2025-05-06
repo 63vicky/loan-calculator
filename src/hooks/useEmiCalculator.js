@@ -48,6 +48,14 @@ export const useEmiCalculator = () => {
     return schedule;
   };
 
+  const resetCalculator = () => {
+    setLoanAmount(100000);
+    setInterestRate(8.5);
+    setLoanTerm(5);
+    setEmi(0);
+    setAmortizationSchedule([]);
+  };
+
   return {
     loanAmount,
     setLoanAmount,
@@ -57,6 +65,7 @@ export const useEmiCalculator = () => {
     setLoanTerm,
     emi,
     amortizationSchedule,
-    calculateEmi
+    calculateEmi,
+    resetCalculator
   };
 };

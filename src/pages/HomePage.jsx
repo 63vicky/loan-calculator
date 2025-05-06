@@ -14,7 +14,7 @@ const HomePage = () => {
     interestRate, setInterestRate,
     loanTerm, setLoanTerm,
     emi, amortizationSchedule,
-    calculateEmi
+    calculateEmi, resetCalculator
   } = useEmiCalculator();
 
   const {
@@ -40,6 +40,14 @@ const HomePage = () => {
 
   const handleCurrencyChange = (event) => {
     setSelectedCurrency(event.target.value);
+  };
+
+  const handleResetTable = () => {
+    // Use the resetCalculator function from the hook
+    resetCalculator();
+    // Reset the UI state
+    setShowAmortizationSchedule(false);
+    setConvertedEmi(0);
   };
 
   return (
@@ -82,14 +90,25 @@ const HomePage = () => {
           </Grid>
         </Grid>
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleCalculate}
-          fullWidth
-        >
-          CALCULATE
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleCalculate}
+            sx={{ flex: 1 }}
+          >
+            CALCULATE
+          </Button>
+
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleResetTable}
+            sx={{ flex: 1 }}
+          >
+            RESET
+          </Button>
+        </Box>
       </Paper>
 
       {emi > 0 && (
