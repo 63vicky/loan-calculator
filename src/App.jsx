@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {
   AppBar, Toolbar, Typography, Switch, Box, Container,
-  FormControlLabel, useMediaQuery, Button
+  FormControlLabel, useMediaQuery
 } from '@mui/material';
 import { ThemeContext } from './context/ThemeContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import HomePage from './pages/HomePage';
 import ExchangeRatesPage from './pages/ExchangeRatesPage';
+import ErrorPage from './pages/ErrorPage';
 import './App.css';
 
 function App() {
@@ -54,6 +55,9 @@ function App() {
                     <Link to="/exchange-rates" style={{ color: 'white', textDecoration: 'none', margin: '0 10px' }}>
                       EXCHANGE RATES (LIVE)
                     </Link>
+                    <Link to="/error-page" style={{ color: 'white', textDecoration: 'none', margin: '0 10px' }}>
+                      ERROR PAGE
+                    </Link>
                   </Box>
                   <FormControlLabel
                     control={<Switch checked={darkMode} onChange={handleThemeChange} />}
@@ -67,6 +71,8 @@ function App() {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/exchange-rates" element={<ExchangeRatesPage />} />
+                <Route path="/error-page" element={<ErrorPage />} />
+                <Route path="*" element={<Navigate to="/error-page" replace />} />
               </Routes>
             </Container>
           </Router>
