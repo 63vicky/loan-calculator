@@ -1,35 +1,70 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import {
+  AppBar, Toolbar, Typography, Switch, Box, Container,
+  FormControlLabel, useMediaQuery
+} from '@mui/material';
+import { ThemeContext } from './context/ThemeContext';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const [darkMode, setDarkMode] = useState(prefersDarkMode);
+
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: darkMode ? 'dark' : 'light',
+          primary: {
+            main: '#1976d2',
+          },
+        },
+      }),
+    [darkMode],
+  );
+
+  const handleThemeChange = () => {
+    setDarkMode(!darkMode);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box sx={{ flexGrow: 1 }}>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Loan Calculator
+              </Typography>
+              <div className="theme-toggle">
+                <FormControlLabel
+                  control={<Switch checked={darkMode} onChange={handleThemeChange} />}
+                  label=""
+                />
+                <span className="theme-toggle-label">
+                  {darkMode ? "Dark Mode" : "Light Mode"}
+                </span>
+              </div>
+            </Toolbar>
+          </AppBar>
+        </Box>
+
+        <Container>
+          <Box sx={{ my: 4 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+              Welcome to Loan Calculator App
+            </Typography>
+            <Typography variant="body1">
+              This is a simple loan calculator app with dark/light mode toggle.
+            </Typography>
+          </Box>
+        </Container>
+      </ThemeProvider>
+    </ThemeContext.Provider>
+  );
 }
 
 export default App
