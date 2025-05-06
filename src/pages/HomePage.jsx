@@ -24,7 +24,7 @@ const HomePage = () => {
 
   const [selectedCurrency, setSelectedCurrency] = useState(baseCurrency);
   const [convertedEmi, setConvertedEmi] = useState(0);
-  const [showAmortizationSchedule, setShowAmortizationSchedule] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
     if (emi > 0) {
@@ -35,7 +35,7 @@ const HomePage = () => {
   const handleCalculate = () => {
     const calculatedEmi = calculateEmi();
     setConvertedEmi(convertCurrency(calculatedEmi, selectedCurrency));
-    setShowAmortizationSchedule(true);
+    setShowResults(true);
   };
 
   const handleCurrencyChange = (event) => {
@@ -43,11 +43,12 @@ const HomePage = () => {
   };
 
   const handleResetTable = () => {
-    // Use the resetCalculator function from the hook
-    resetCalculator();
-    // Reset the UI state
-    setShowAmortizationSchedule(false);
-    setConvertedEmi(0);
+    // Reset the table or recalculate with default values
+    setLoanAmount(100000);
+    setInterestRate(8.5);
+    setLoanTerm(5);
+    // Hide all results except the reset button
+    setShowResults(false);
   };
 
   return (
@@ -56,98 +57,97 @@ const HomePage = () => {
         Loan Calculator Dashboard
       </Typography>
 
-      <Paper sx={{ p: 3, mb: 3 }}>
-        <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={12} md={4}>
-            <TextField
-              label="Loan Amount"
-              type="number"
-              fullWidth
-              value={loanAmount}
-              onChange={(e) => setLoanAmount(Number(e.target.value))}
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField
-              label="Interest Rate (%)"
-              type="number"
-              fullWidth
-              value={interestRate}
-              onChange={(e) => setInterestRate(Number(e.target.value))}
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField
-              label="Term (Years)"
-              type="number"
-              fullWidth
-              value={loanTerm}
-              onChange={(e) => setLoanTerm(Number(e.target.value))}
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid item xs={12} md={4}>
+          <TextField
+            label="Loan Amount"
+            type="number"
+            fullWidth
+            value={loanAmount}
+            onChange={(e) => setLoanAmount(Number(e.target.value))}
+            InputLabelProps={{ shrink: true }}
+          />
         </Grid>
+        <Grid item xs={12} md={4}>
+          <TextField
+            label="Interest Rate (%)"
+            type="number"
+            fullWidth
+            value={interestRate}
+            onChange={(e) => setInterestRate(Number(e.target.value))}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <TextField
+            label="Term (Years)"
+            type="number"
+            fullWidth
+            value={loanTerm}
+            onChange={(e) => setLoanTerm(Number(e.target.value))}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+      </Grid>
 
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleCalculate}
-            sx={{ flex: 1 }}
-          >
-            CALCULATE
-          </Button>
-
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={handleResetTable}
-            sx={{ flex: 1 }}
-          >
-            RESET
-          </Button>
-        </Box>
-      </Paper>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleCalculate}
+        sx={{ mb: 3 }}
+      >
+        CALCULATE
+      </Button>
 
       {emi > 0 && (
         <>
-          <Paper sx={{ p: 3, mb: 3 }}>
-            <Typography variant="h5" gutterBottom>
-              Monthly EMI: ${emi.toFixed(2)}
-            </Typography>
+          {/* Always show the reset button */}
+          
 
-            <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-              <FormControl sx={{ minWidth: 120, mr: 2 }}>
-                <InputLabel id="currency-select-label">Currency</InputLabel>
-                <Select
-                  labelId="currency-select-label"
-                  value={selectedCurrency}
-                  label="Currency"
-                  onChange={handleCurrencyChange}
-                >
-                  {['INR', 'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD'].map((currency) => (
-                    <MenuItem key={currency} value={currency}>
-                      {currency}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              <Typography variant="body1">
-                Converted EMI: {selectedCurrency} {convertedEmi}
+          {/* Show the rest of the content only when showResults is true */}
+          {showResults && (
+            <>
+              
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+              <Typography variant="h5" gutterBottom>
+                Monthly EMI: ${emi.toFixed(2)}
               </Typography>
-            </Box>
-          </Paper>
+              <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleResetTable}
+            >
+              RESET TABLE
+            </Button>
+          </Box>
+              
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <FormControl sx={{ minWidth: 120, mr: 2 }}>
+                  <InputLabel id="currency-select-label">Currency</InputLabel>
+                  <Select
+                    labelId="currency-select-label"
+                    value={selectedCurrency}
+                    label="Currency"
+                    onChange={handleCurrencyChange}
+                  >
+                    {['INR', 'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD'].map((currency) => (
+                      <MenuItem key={currency} value={currency}>
+                        {currency}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
-          {showAmortizationSchedule && amortizationSchedule.length > 0 && (
-            <Paper sx={{ p: 3, mb: 3 }}>
+                <Typography variant="body1">
+                  Converted EMI: {selectedCurrency} {convertedEmi}
+                </Typography>
+              </Box>
+
               <Typography variant="h6" gutterBottom>
                 Amortization Schedule ({selectedCurrency})
               </Typography>
 
-              <TableContainer component={Paper} sx={{ mb: 2 }}>
+              <TableContainer component={Paper} sx={{ mb: 4 }}>
                 <Table>
                   <TableHead>
                     <TableRow>
@@ -177,7 +177,7 @@ const HomePage = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </Paper>
+            </>
           )}
         </>
       )}
