@@ -127,10 +127,6 @@ This app integrates with the [ExchangeRate-API](https://www.exchangerate-api.com
 ### Mobile View
 ![Mobile View](./screenshots/mobile.png)
 
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🙏 Acknowledgements
 
 - [Material UI](https://mui.com/) for the component library
